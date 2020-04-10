@@ -23,7 +23,8 @@ public class BridgeActionTest extends GooseGameTest {
     @Test
     public void testBridge() throws InvalidActionException {
         MoveAction action = new MoveAction(pippo, 1, 1);
-        ActionResult result = action.execute();
+        game.dispatchAction(action);
+        ActionResult result = game.getActionResult();
         assertEquals("Pippo rolls 1, 1. Pippo moves from 4 to The Bridge. Pippo jumps to 12", result.getMessage());
     }
 }

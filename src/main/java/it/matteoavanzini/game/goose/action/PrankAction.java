@@ -1,7 +1,5 @@
 package it.matteoavanzini.game.goose.action;
 
-import java.util.ArrayList;
-
 import it.matteoavanzini.game.goose.exception.InvalidActionException;
 import it.matteoavanzini.game.goose.model.Player;
 import it.matteoavanzini.game.goose.tile.Tile;
@@ -10,6 +8,7 @@ public class PrankAction extends AbstractAction {
 
     private Player player;
     private Tile tile;
+    private Player occupant;
 
     PrankAction(Player player, Tile tile) {
         this.player = player;
@@ -18,17 +17,20 @@ public class PrankAction extends AbstractAction {
     }
 
     @Override
-    public ActionResult execute() throws InvalidActionException {
-        Player occupant = tile.getOccupants().get(0);
-        Tile from = player.getPosition();
-        from.addOccupant(occupant);
+    public boolean executeAction() throws InvalidActionException {
+        this.occupant = tile.getOccupants().get(0);
+        Tile fromTile = player.getPosition();
+        fromTile.addOccupant(occupant);
         tile.removeOccupant(occupant);
-
-        return buildResult(new ArrayList<Object>() {{
-            add(tile.toString());
-            add(occupant.getName()); 
-            add(from.toString());
-        }});
+        return true;
     }
 
+    @Override
+    public Object[] getMessageParameters() {
+        return new Object[] { 
+            player.getPosition().toString(),
+            occupant.getName(),
+            player.getPreviousPosition().toString()
+         };
+    }
 }

@@ -3,6 +3,6 @@ package it.matteoavanzini.game.goose.action;
 import it.matteoavanzini.game.goose.exception.InvalidActionException;
 
 public interface Action {
-    String getMessage();
+    Object[] getMessageParameters();
     ActionResult execute() throws InvalidActionException;
 }

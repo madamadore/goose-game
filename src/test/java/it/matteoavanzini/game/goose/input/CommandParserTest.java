@@ -2,6 +2,9 @@ package it.matteoavanzini.game.goose.input;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +22,11 @@ public class CommandParserTest extends GooseGameTest {
 
     @Before
     public void setUp() {
-        parser = new CommandParser(game);
+        Set<Command> commands = new HashSet<Command>();
+        commands.add(new AddPlayerCommand(game));
+        commands.add(new MoveCommand(game));
+
+        parser = new CommandParser(game, commands);
         Player pippo = new GoosePlayer(game.getStartingTile(), "Pippo", game);
         game.getPlayers().add(pippo);
     }

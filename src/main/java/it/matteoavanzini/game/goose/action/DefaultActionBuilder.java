@@ -6,12 +6,16 @@ import it.matteoavanzini.game.goose.tile.Tile;
 
 public class DefaultActionBuilder implements ActionBuilder {
 
+    public Action getQuitAction(GameBoard game) {
+        return new QuitAction(game);
+    }
+
     public Action getAddPlayerAction(GameBoard game, String name) {
         return new AddPlayerAction(game, name);
     }
 
     public Action getBridgeAction(Tile tile) {
-        return new MoveTo12Action(tile);
+        return new BridgeAction(tile);
     }
 
     public Action getGooseAction(Tile tile) {

@@ -18,7 +18,7 @@ public class DuplicatedPlayerActionTest extends GooseGameTest {
     @Before
     public void setUp() {
         Player pippo = new GoosePlayer(game.getStartingTile(), "Pippo", game);
-        game.getPlayers().add(pippo);
+        game.addParticipant(pippo);
     }
     
     @Test

@@ -1,26 +1,27 @@
 package it.matteoavanzini.game.goose.model;
 
 import it.matteoavanzini.game.goose.GameBoard;
-import it.matteoavanzini.game.goose.action.ActionResult;
-import it.matteoavanzini.game.goose.exception.InvalidActionException;
 import it.matteoavanzini.game.goose.tile.Tile;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 public class GoosePlayer implements Player {
     private Tile position;
+    private Tile previousPosition;
     private String name;
     private GameBoard game;
 
-    public ActionResult moveTo(Tile arrival) throws InvalidActionException {
+    public GoosePlayer(Tile position, String name, GameBoard game) {
+        this.position = position;
+        this.name = name;
+        this.game = game;
+    }
+
+    public void moveTo(Tile arrival) {
         position.removeOccupant(this);
-		return arrival.onLand(this);
+		arrival.onLand(this);
     }
 
     @Override
@@ -37,6 +38,12 @@ public class GoosePlayer implements Player {
             return ((Player) obj).getName().equals(this.getName());
         }
         return false;
+    }
+
+    @Override
+    public void setPosition(Tile tile) {
+        this.previousPosition = position;
+        this.position = tile;
     }
 
     

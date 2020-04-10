@@ -5,10 +5,7 @@ import java.util.List;
 
 import it.matteoavanzini.game.goose.GameBoard;
 import it.matteoavanzini.game.goose.action.Action;
-import it.matteoavanzini.game.goose.action.ActionBuilder;
-import it.matteoavanzini.game.goose.action.ActionResult;
 import it.matteoavanzini.game.goose.action.PrankAction;
-import it.matteoavanzini.game.goose.exception.InvalidActionException;
 import it.matteoavanzini.game.goose.model.Player;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,28 +26,19 @@ public abstract class AbstractTile implements Tile {
         occupants = new ArrayList<>();
     }
 
-    public ActionResult onLand(Player p) throws InvalidActionException {
-        ActionResult result = null;
-        if (game.isPrankster() && this.occupants.size() > 0) {
-            ActionBuilder actionBuilder = game.getActionBuilder();
-            PrankAction prank = (PrankAction) actionBuilder.getPrankAction(p, this);
-            result = prank.execute();
-		}
+    @Override
+    public void onLand(Player p) {
         this.addOccupant(p);
+
+        if (game.isPrankster() && this.occupants.size() > 1) {
+            PrankAction prank = (PrankAction) game.getActionBuilder().getPrankAction(p, this);
+            game.dispatchAction(prank);
+        }
         
 		if (getAction() != null) {
             Action action = getAction();
-            ActionResult subResult = action.execute();
-
-            if (result == null) {
-                result = new ActionResult(true, subResult.getMessage(), null);
-            } else {
-                String message = result.getMessage() + subResult.getMessage();
-                subResult.setMessage(message);
-            }
+            game.dispatchAction(action);
         }
-        
-		return result;
 	}
 	
 	public void addOccupant(Player p) {

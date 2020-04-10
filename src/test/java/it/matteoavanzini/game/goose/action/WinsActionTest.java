@@ -23,7 +23,8 @@ public class WinsActionTest extends GooseGameTest {
     @Test
     public void testBounce() throws InvalidActionException {
         MoveAction action = new MoveAction(pippo, 3, 2);
-        ActionResult result = action.execute();
+        game.dispatchAction(action);
+        ActionResult result = game.getActionResult();
         assertEquals("Pippo rolls 3, 2. Pippo moves from 60 to 63. Pippo bounces! Pippo returns to 61", result.getMessage());
     }
 
@@ -31,7 +32,8 @@ public class WinsActionTest extends GooseGameTest {
     public void testWin() throws InvalidActionException {
         game.getTile(60).onLand(pippo);
         MoveAction action = new MoveAction(pippo, 1, 2);
-        ActionResult result = action.execute();
+        game.dispatchAction(action);
+        ActionResult result = game.getActionResult();
         assertEquals("Pippo rolls 1, 2. Pippo moves from 60 to 63. Pippo Wins!!", result.getMessage());
     }
 }

@@ -6,6 +6,7 @@ import it.matteoavanzini.game.goose.tile.Tile;
 
 public interface ActionBuilder {
 
+    Action getQuitAction(GameBoard game);
     Action getAddPlayerAction(GameBoard game, String name);
     Action getBridgeAction(Tile tile);
     Action getGooseAction(Tile tile);

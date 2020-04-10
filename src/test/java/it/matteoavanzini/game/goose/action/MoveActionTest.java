@@ -25,18 +25,27 @@ public class MoveActionTest extends GooseGameTest {
     }
 
     @Test
-    public void testMove() throws InvalidActionException {
+    public void testMovePippo() throws InvalidActionException {
         MoveAction action = new MoveAction(pippo, 4, 2);
-        ActionResult result = action.execute();
+        game.dispatchAction(action);
+        ActionResult result = game.getActionResult();
         assertEquals("Pippo rolls 4, 2. Pippo moves from Start to 6", result.getMessage());
-
-        action = new MoveAction(pluto, 2, 2);
-        result = action.execute();
-        assertEquals("Pluto rolls 2, 2. Pluto moves from Start to 4", result.getMessage());
-
-        action = new MoveAction(pippo, 3, 2);
-        result = action.execute();
-        assertEquals("Pippo rolls 3, 2. Pippo moves from 6 to 11", result.getMessage());
     }
 
+    @Test
+    public void testMovePluto() throws InvalidActionException {
+        MoveAction action = new MoveAction(pluto, 2, 2);
+        game.dispatchAction(action);
+        ActionResult result = game.getActionResult();
+        assertEquals("Pluto rolls 2, 2. Pluto moves from Start to 4", result.getMessage());
+    }
+
+    @Test
+    public void testMovePippoAgain() throws InvalidActionException {
+        pippo.moveTo(game.getTile(6));
+        MoveAction action = new MoveAction(pippo, 3, 2);
+        game.dispatchAction(action);
+        ActionResult result = game.getActionResult();
+        assertEquals("Pippo rolls 3, 2. Pippo moves from 6 to 11", result.getMessage());
+    }
 }
