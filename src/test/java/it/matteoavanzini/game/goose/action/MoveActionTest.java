@@ -18,8 +18,8 @@ public class MoveActionTest extends GooseGameTest {
 
     @Before
     public void setUp() throws InvalidActionException {
-        pippo = new GoosePlayer(game.getStartingTile(), "Pippo", game);
-        pluto = new GoosePlayer(game.getStartingTile(), "Pluto", game);
+        pippo = new GoosePlayer(game, "Pippo");
+        pluto = new GoosePlayer(game, "Pluto");
         game.getTiles().remove(6);
         game.getTiles().add(6, new SimpleTile(game, 6));
     }

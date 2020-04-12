@@ -2,11 +2,7 @@ package it.matteoavanzini.game.goose.tile;
 
 import it.matteoavanzini.game.goose.GameBoard;
 import it.matteoavanzini.game.goose.action.Action;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class SimpleTile extends AbstractTile {
 
     public Action getAction() {

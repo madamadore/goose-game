@@ -2,7 +2,7 @@ package it.matteoavanzini.game.goose.tile;
 
 import it.matteoavanzini.game.goose.GameBoard;
 import it.matteoavanzini.game.goose.action.Action;
-import it.matteoavanzini.game.goose.action.ActionBuilder;
+import it.matteoavanzini.game.goose.action.BridgeAction;
 
 public class BridgeTile extends AbstractTile {
 
@@ -12,7 +12,6 @@ public class BridgeTile extends AbstractTile {
     }
 
     public Action getAction() {
-        ActionBuilder actionBuilder = game.getActionBuilder();
-        return actionBuilder.getBridgeAction(this);
+        return new BridgeAction(getLastOccupant());
     }
 }

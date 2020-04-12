@@ -21,8 +21,8 @@ public class PrankActionTest extends GooseGameTest {
     @Before
     public void setUp() throws InvalidActionException {
         game = new GooseGameBoard(GameBoard.PRANKSTER);
-        pippo = new GoosePlayer(game.getStartingTile(), "Pippo", game);
-        pluto = new GoosePlayer(game.getStartingTile(), "Pluto", game);
+        pippo = new GoosePlayer(game, "Pippo");
+        pluto = new GoosePlayer(game, "Pluto");
         game.addParticipant(pippo);
         game.addParticipant(pluto);
 

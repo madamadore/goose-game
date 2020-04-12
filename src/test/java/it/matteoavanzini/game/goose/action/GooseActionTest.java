@@ -16,7 +16,7 @@ public class GooseActionTest extends GooseGameTest {
 
     @Before
     public void setUp() throws InvalidActionException {
-        pippo = new GoosePlayer(game.getStartingTile(), "Pippo", game);
+        pippo = new GoosePlayer(game, "Pippo");
         game.getTile(3).onLand(pippo);
     }
 

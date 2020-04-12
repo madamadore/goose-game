@@ -7,17 +7,14 @@ import it.matteoavanzini.game.goose.GameBoard;
 import it.matteoavanzini.game.goose.action.Action;
 import it.matteoavanzini.game.goose.action.PrankAction;
 import it.matteoavanzini.game.goose.model.Player;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public abstract class AbstractTile implements Tile {
     
     protected List<Player> occupants;
     protected int number;
     protected String name;
     protected GameBoard game;
+    protected Tile fromTile;
 
     AbstractTile(GameBoard game, int i) {
         this.game = game;
@@ -28,10 +25,11 @@ public abstract class AbstractTile implements Tile {
 
     @Override
     public void onLand(Player p) {
+        fromTile = p.getPosition();
         this.addOccupant(p);
 
         if (game.isPrankster() && this.occupants.size() > 1) {
-            PrankAction prank = (PrankAction) game.getActionBuilder().getPrankAction(p, this);
+            PrankAction prank = new PrankAction(p, fromTile);
             game.dispatchAction(prank);
         }
         
@@ -52,6 +50,22 @@ public abstract class AbstractTile implements Tile {
 
     public Player getLastOccupant() {
         return this.occupants.get( occupants.size() - 1 );
+    }
+
+    public List<Player> getOccupants() {
+        return occupants;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public GameBoard getGame() {
+        return game;
     }
 
     @Override

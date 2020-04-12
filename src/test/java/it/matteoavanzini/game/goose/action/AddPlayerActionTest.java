@@ -21,7 +21,7 @@ public class AddPlayerActionTest extends GooseGameTest {
 
     @Test
     public void addSecondPlayer() throws InvalidActionException {
-        Player pippo = new GoosePlayer(game.getStartingTile(), "Pippo", game);
+        Player pippo = new GoosePlayer(game, "Pippo");
         game.addParticipant(pippo);
         
         Action action = new AddPlayerAction(game, "Pluto");

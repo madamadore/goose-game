@@ -10,9 +10,9 @@ public class BridgeAction extends AbstractAction {
     private Tile tile;
     private Player player;
 
-    BridgeAction(Tile tile) {
-        this.tile = tile;
-        this.player = tile.getLastOccupant();
+    public BridgeAction(Player player) {
+        this.player = player;
+        this.tile = player.getPosition();
         this.message = "%s jumps to %s";
     }
 

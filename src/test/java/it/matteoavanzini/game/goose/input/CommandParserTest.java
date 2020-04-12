@@ -22,12 +22,12 @@ public class CommandParserTest extends GooseGameTest {
 
     @Before
     public void setUp() {
-        Set<Command> commands = new HashSet<Command>();
+        Set<Command<? extends Action>> commands = new HashSet<Command<? extends Action>>();
         commands.add(new AddPlayerCommand(game));
         commands.add(new MoveCommand(game));
 
-        parser = new CommandParser(game, commands);
-        Player pippo = new GoosePlayer(game.getStartingTile(), "Pippo", game);
+        parser = new CommandParser(commands);
+        Player pippo = new GoosePlayer(game, "Pippo");
         game.getPlayers().add(pippo);
     }
 

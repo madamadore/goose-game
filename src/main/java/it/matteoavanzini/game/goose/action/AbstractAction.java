@@ -3,10 +3,9 @@ package it.matteoavanzini.game.goose.action;
 import java.util.Locale;
 
 import it.matteoavanzini.game.goose.exception.InvalidActionException;
-import lombok.Getter;
 
 public abstract class AbstractAction implements Action {
-    @Getter
+    
     protected String message;
 
     protected abstract boolean executeAction() throws InvalidActionException;
@@ -21,5 +20,9 @@ public abstract class AbstractAction implements Action {
         Object[] messageParameters = getMessageParameters();
         String message = formatMessage(messageParameters);
         return new ActionResult(success, message);
+    }
+
+    protected String getMessage() {
+        return message;
     }
 }

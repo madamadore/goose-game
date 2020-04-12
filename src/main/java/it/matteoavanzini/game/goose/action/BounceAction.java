@@ -7,10 +7,11 @@ import it.matteoavanzini.game.goose.tile.Tile;
 
 public class BounceAction extends MoveAction {
     
-    private GameBoard game;
+    private Tile fromTile;
 
-    public BounceAction(Player player, int... rollDice) {
-        super(player, rollDice);
+    public BounceAction(Player player, Tile fromTile) {
+        super(player, player.getGame().getDiceRoll().getResult());
+        this.fromTile = fromTile;
         this.player = player;
         this.game = player.getGame();
         this.message = "%s bounces! %s returns to %s";
@@ -28,11 +29,11 @@ public class BounceAction extends MoveAction {
     @Override
     public boolean executeAction() throws InvalidActionException {
 
-        Tile previousPlayerPosition = player.getPreviousPosition();
+        GameBoard game = player.getGame();
         Tile finalTile = game.getFinalTile();
         int sum = diceRoll.getSum();
 
-        int arrivalNumber = previousPlayerPosition.getNumber() + sum;
+        int arrivalNumber = fromTile.getNumber() + sum;
         int bounce = arrivalNumber - finalTile.getNumber();
         arrivalNumber = finalTile.getNumber() - bounce;
 

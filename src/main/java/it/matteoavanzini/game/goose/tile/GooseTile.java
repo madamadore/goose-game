@@ -2,7 +2,7 @@ package it.matteoavanzini.game.goose.tile;
 
 import it.matteoavanzini.game.goose.GameBoard;
 import it.matteoavanzini.game.goose.action.Action;
-import it.matteoavanzini.game.goose.action.ActionBuilder;
+import it.matteoavanzini.game.goose.action.GooseAction;
 
 public class GooseTile extends AbstractTile {
 
@@ -12,8 +12,7 @@ public class GooseTile extends AbstractTile {
     }
 
     public Action getAction() {
-        ActionBuilder actionBuilder = game.getActionBuilder();
-        return actionBuilder.getGooseAction(this);
+        return new GooseAction(getLastOccupant());
     }
 
     @Override

@@ -3,13 +3,12 @@ package it.matteoavanzini.game.goose;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Set;
 
 import it.matteoavanzini.game.goose.action.Action;
-import it.matteoavanzini.game.goose.action.ActionBuilder;
 import it.matteoavanzini.game.goose.action.ActionResult;
-import it.matteoavanzini.game.goose.action.DefaultActionBuilder;
 import it.matteoavanzini.game.goose.exception.InvalidActionException;
 import it.matteoavanzini.game.goose.exception.InvalidCommandException;
 import it.matteoavanzini.game.goose.input.AddPlayerCommand;
@@ -17,6 +16,7 @@ import it.matteoavanzini.game.goose.input.Command;
 import it.matteoavanzini.game.goose.input.CommandParser;
 import it.matteoavanzini.game.goose.input.CommandParserInterface;
 import it.matteoavanzini.game.goose.input.MoveCommand;
+import it.matteoavanzini.game.goose.input.QuitCommand;
 import it.matteoavanzini.game.goose.model.DiceRoll;
 import it.matteoavanzini.game.goose.model.Player;
 import it.matteoavanzini.game.goose.model.TwoSixDiceRoll;
@@ -25,24 +25,15 @@ import it.matteoavanzini.game.goose.tile.EndTile;
 import it.matteoavanzini.game.goose.tile.GooseTile;
 import it.matteoavanzini.game.goose.tile.SimpleTile;
 import it.matteoavanzini.game.goose.tile.Tile;
-import lombok.Getter;
-import lombok.Setter;
 
 public final class GooseGameBoard implements GameBoard {
-    
-    @Getter
-    private ActionBuilder actionBuilder;
+
     private CommandParserInterface parser;
-    @Getter
     private DiceRoll diceRoll;
-    @Setter
     private boolean prankster;
     private boolean active;
-    @Getter
     private List<Tile> tiles;
-    @Getter
     private List<Player> players;
-    @Getter
     private ActionResult actionResult;
 
     public GooseGameBoard(boolean prankster) {
@@ -55,13 +46,13 @@ public final class GooseGameBoard implements GameBoard {
     }
 
     public void config() {
-        Set<Command> commands = new HashSet<Command>();
+        Set<Command<? extends Action>> commands = new HashSet<>();
         commands.add(new AddPlayerCommand(this));
         commands.add(new MoveCommand(this));
+        commands.add(new QuitCommand(this));
         
-        this.parser = new CommandParser(this, commands);
+        this.parser = new CommandParser(commands);
         this.diceRoll = new TwoSixDiceRoll();
-        this.actionBuilder = new DefaultActionBuilder();
     }
 
     public void executeCommand(String command) throws InvalidCommandException {
@@ -80,9 +71,13 @@ public final class GooseGameBoard implements GameBoard {
                 String command = scanner.nextLine();
                 executeCommand(command);
 
-                System.out.println(actionResult.getMessage());
+                if (actionResult.isSuccess())
+                    System.out.println(actionResult.getMessage());
             } catch (InvalidCommandException err) {
                 System.out.println(err.getMessage());
+            } catch (NoSuchElementException err) {
+                scanner.close();
+                scanner = new Scanner(System.in);
             }
         }
         scanner.close();
@@ -135,10 +130,7 @@ public final class GooseGameBoard implements GameBoard {
         return active;
     }
 
-    public DiceRoll rollDice() {
-        diceRoll.roll();
-        return diceRoll;
-    }
+    
 
     public void addParticipant(Player player) {
         this.players.add(player);
@@ -167,5 +159,21 @@ public final class GooseGameBoard implements GameBoard {
             }
         }
         return null;
+    }
+    
+    public DiceRoll getDiceRoll() {
+        return diceRoll;
+    }
+
+    public List<Tile> getTiles() {
+        return tiles;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public ActionResult getActionResult() {
+        return actionResult;
     }
 }

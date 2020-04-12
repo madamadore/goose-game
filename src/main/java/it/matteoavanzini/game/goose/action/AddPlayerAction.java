@@ -7,7 +7,6 @@ import it.matteoavanzini.game.goose.exception.DuplicateUserException;
 import it.matteoavanzini.game.goose.exception.InvalidActionException;
 import it.matteoavanzini.game.goose.model.GoosePlayer;
 import it.matteoavanzini.game.goose.model.Player;
-import it.matteoavanzini.game.goose.tile.Tile;
 
 public class AddPlayerAction extends AbstractAction {
 
@@ -23,9 +22,8 @@ public class AddPlayerAction extends AbstractAction {
     @Override
     public boolean executeAction() throws InvalidActionException {
 
-        Tile startTile = game.getStartingTile();
         List<Player> playersOnGame = game.getPlayers();
-        Player temporaryPlayer = new GoosePlayer(startTile, newPlayerName, game);
+        Player temporaryPlayer = new GoosePlayer(game, newPlayerName);
         
         if (!playersOnGame.contains(temporaryPlayer)) {
             game.addParticipant(temporaryPlayer);

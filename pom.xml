@@ -4,7 +4,7 @@
   <groupId>it.matteoavanzini.game</groupId>
   <artifactId>goose</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <name>goose</name>
   <url>http://maven.apache.org</url>
   
@@ -16,13 +16,6 @@
   </properties>
 
   <dependencies>
-
-    <dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.12</version>
-			<scope>provided</scope>
-		</dependency>
 
     <dependency>
       <groupId>junit</groupId>

@@ -23,7 +23,8 @@ public class MoveAction extends AbstractAction {
             this.diceRoll = player.getGame().getDiceRoll();
             diceRoll.setRoll(rollDice);
         } else {
-            this.diceRoll = player.getGame().rollDice();
+            player.getGame().getDiceRoll().roll();
+            this.diceRoll = player.getGame().getDiceRoll();
         }
     }
 

@@ -4,19 +4,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import it.matteoavanzini.game.goose.GameBoard;
-import it.matteoavanzini.game.goose.action.Action;
-import it.matteoavanzini.game.goose.action.ActionBuilder;
+import it.matteoavanzini.game.goose.action.MoveAction;
 import it.matteoavanzini.game.goose.exception.ParseCommandException;
 import it.matteoavanzini.game.goose.model.Player;
 
-public class MoveCommand extends AbstractCommand {
+public class MoveCommand extends AbstractCommand<MoveAction> {
 
     public MoveCommand(GameBoard game) {
         super(game);
         this.pattern = Pattern.compile("^(move) (\\w*) *(\\d, \\d)?$");
     }
 
-    public Action getAction(String input) throws ParseCommandException {
+    public MoveAction getAction(String input) throws ParseCommandException {
         Matcher m = pattern.matcher(input);
         if (m.find()) {
             String playerName = m.group(2);
@@ -31,9 +30,7 @@ public class MoveCommand extends AbstractCommand {
             if (null != rollDice) {
                 roll = parseRollDice(rollDice);
             }
-        
-            ActionBuilder actionBuilder = game.getActionBuilder();
-            return actionBuilder.getMoveAction(player, roll);
+            return new MoveAction(player, roll);
         } 
         return null;
     }

@@ -1,17 +1,13 @@
 package it.matteoavanzini.game.goose.action;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class ActionResult {
     private boolean success;
     private String message = "";
+
+    public ActionResult(boolean success, String message) {
+        this.success = success;
+        this.message = message;
+    }
 
     public ActionResult merge(ActionResult... results) {
         boolean success = true;
@@ -29,5 +25,21 @@ public class ActionResult {
             }
         }
         return new ActionResult(success, this.message);
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public boolean isSuccess() {
+        return success;
     }
 }

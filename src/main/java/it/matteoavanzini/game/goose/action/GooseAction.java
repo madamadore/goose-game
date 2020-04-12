@@ -12,9 +12,9 @@ public class GooseAction extends AbstractAction {
     private Player player;
     private String arrivalTileName;
     
-    GooseAction(Tile tile) {
-        this.tile = tile;
-        this.player = tile.getLastOccupant();
+    public GooseAction(Player player) {
+        this.player = player;
+        this.tile = player.getPosition();
         this.message = "%s moves again and goes to %s";
     }
 

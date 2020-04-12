@@ -1,6 +1,8 @@
 package it.matteoavanzini.game.goose.action;
 
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 import it.matteoavanzini.game.goose.GameBoard;
 import it.matteoavanzini.game.goose.exception.InvalidActionException;
@@ -16,14 +18,18 @@ public class QuitAction extends AbstractAction {
 
     @Override
     public boolean executeAction() throws InvalidActionException {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Game is not ended. Are you sure? ");
-        String response = scanner.nextLine();
-        scanner.close();
-        if (response.equalsIgnoreCase("Y") || response.equalsIgnoreCase("yes")) {
-            game.endGame();
-        }
-        return true;
+        // don't close BufferedReader to preserve System.in
+        BufferedReader bf = null;
+        System.out.print("Game is not ended. Are you sure? [no] ");
+        try {
+            bf = new BufferedReader(new InputStreamReader(System.in));
+            String response = bf.readLine();
+            if (response.equalsIgnoreCase("Y") || response.equalsIgnoreCase("yes")) {
+                game.endGame();
+                return true;
+            }
+        } catch (IOException ignore) {} 
+        return false;
     }
 
     @Override

@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import it.matteoavanzini.game.goose.action.Action;
 import it.matteoavanzini.game.goose.exception.ParseCommandException;
 
-public interface Command {
+public interface Command<T extends Action> {
     Pattern getPattern();
-    Action getAction(String input) throws ParseCommandException;
+    T getAction(String input) throws ParseCommandException;
 }
