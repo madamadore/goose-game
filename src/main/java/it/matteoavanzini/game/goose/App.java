@@ -12,7 +12,7 @@ public class App
         if (args.length > 0 && args[0].equals("-p")) {
             prankster = true;
         }
-        GameBoard game = new GooseGameBoard(prankster);
+        GameContext game = new GooseGameBoard(prankster);
         game.start();
     }
 }

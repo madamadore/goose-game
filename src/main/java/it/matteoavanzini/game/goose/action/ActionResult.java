@@ -1,17 +1,12 @@
 package it.matteoavanzini.game.goose.action;
 
-import lombok.AllArgsConstructor;
+import it.matteoavanzini.game.goose.event.ActionEvent;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class ActionResult {
-    private boolean success;
-    private String message = "";
+public abstract class ActionResult implements ActionEvent {
+    @Getter
+    protected boolean success;
+    protected String message = "";
 
     public ActionResult merge(ActionResult... results) {
         boolean success = true;

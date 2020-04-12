@@ -1,18 +1,18 @@
 package it.matteoavanzini.game.goose.action;
 
 import it.matteoavanzini.game.goose.GameBoard;
+import it.matteoavanzini.game.goose.event.OnMoveEvent;
 import it.matteoavanzini.game.goose.exception.InvalidActionException;
 import it.matteoavanzini.game.goose.model.Player;
 import it.matteoavanzini.game.goose.tile.Tile;
 
 public class BounceAction extends MoveAction {
-    
-    private GameBoard game;
 
-    public BounceAction(Player player, int... rollDice) {
+    protected Tile finalTile;
+
+    public BounceAction(Player player, Tile finalTile, int... rollDice) {
         super(player, rollDice);
-        this.player = player;
-        this.game = player.getGame();
+        this.finalTile = finalTile;
         this.message = "%s bounces! %s returns to %s";
     }
 
@@ -26,10 +26,9 @@ public class BounceAction extends MoveAction {
     }
 
     @Override
-    public boolean executeAction() throws InvalidActionException {
+    public OnMoveEvent getEvent() {
 
         Tile previousPlayerPosition = player.getPreviousPosition();
-        Tile finalTile = game.getFinalTile();
         int sum = diceRoll.getSum();
 
         int arrivalNumber = previousPlayerPosition.getNumber() + sum;
@@ -39,7 +38,8 @@ public class BounceAction extends MoveAction {
         Tile arrival = game.getTile(arrivalNumber);
         player.moveTo(arrival);
 
-        return true;
+        OnMoveEvent moveEvent = new OnMoveEvent(player);
+        return moveEvent;
     }
 
 }

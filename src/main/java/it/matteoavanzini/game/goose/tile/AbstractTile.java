@@ -1,57 +1,52 @@
 package it.matteoavanzini.game.goose.tile;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-import it.matteoavanzini.game.goose.GameBoard;
-import it.matteoavanzini.game.goose.action.Action;
-import it.matteoavanzini.game.goose.action.PrankAction;
+import it.matteoavanzini.game.goose.GameContext;
+import it.matteoavanzini.game.goose.event.ActionBuilder;
+import it.matteoavanzini.game.goose.event.ActionDispatcher;
+import it.matteoavanzini.game.goose.event.OnMoveEvent;
+import it.matteoavanzini.game.goose.event.OnPrankEvent;
 import it.matteoavanzini.game.goose.model.Player;
 import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public abstract class AbstractTile implements Tile {
     
-    protected List<Player> occupants;
+    @Getter
     protected int number;
+    @Getter
     protected String name;
-    protected GameBoard game;
-
-    AbstractTile(GameBoard game, int i) {
+    protected GameContext game;
+    protected ActionDispatcher actionDispatcher;
+    @Getter
+    private Set<Player> occupants;
+    
+    AbstractTile(GameContext game, int i) {
         this.game = game;
+        this.actionDispatcher = game.getActionDispatcher();
         number = i;
         name = Integer.toString(number);
-        occupants = new ArrayList<>();
+        occupants = new LinkedHashSet<>();
     }
 
     @Override
-    public void onLand(Player p) {
-        this.addOccupant(p);
-
-        if (game.isPrankster() && this.occupants.size() > 1) {
-            PrankAction prank = (PrankAction) game.getActionBuilder().getPrankAction(p, this);
-            game.dispatchAction(prank);
+    public void onLand(OnMoveEvent event) {
+        if (game.isPrankster() && this.occupants.size() > 0) {
+            Player occupant = this.occupants.iterator().next();
+            OnPrankEvent prank = game.getActionBuilder().getPrankEvent(occupant);
+            actionDispatcher.dispatchEvent(prank);
         }
-        
-		if (getAction() != null) {
-            Action action = getAction();
-            game.dispatchAction(action);
-        }
+        this.addOccupant(event.getPlayer());
 	}
 	
-	public void addOccupant(Player p) {
+	protected void addOccupant(Player p) {
         this.occupants.add(p);
         p.setPosition(this);
     }
 
     public void removeOccupant(Player p) {
         this.occupants.remove(p);
-    }
-
-    public Player getLastOccupant() {
-        return this.occupants.get( occupants.size() - 1 );
     }
 
     @Override

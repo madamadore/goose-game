@@ -1,19 +1,22 @@
 package it.matteoavanzini.game.goose.tile;
 
-import it.matteoavanzini.game.goose.GameBoard;
-import it.matteoavanzini.game.goose.action.Action;
-import it.matteoavanzini.game.goose.action.ActionBuilder;
+import it.matteoavanzini.game.goose.GameContext;
+import it.matteoavanzini.game.goose.event.ActionBuilder;
+import it.matteoavanzini.game.goose.event.OnGooseEvent;
+import it.matteoavanzini.game.goose.event.OnMoveEvent;
 
 public class GooseTile extends AbstractTile {
 
-    public GooseTile(GameBoard game, int number) {
+    public GooseTile(GameContext game, int number) {
         super(game, number);
         this.name = "The Goose";
     }
 
-    public Action getAction() {
-        ActionBuilder actionBuilder = game.getActionBuilder();
-        return actionBuilder.getGooseAction(this);
+    @Override
+    public void onLand(OnMoveEvent e) {
+        ActionBuilder actionBuilder = actionDispatcher.getActionBuilder();
+        OnGooseEvent goose = actionBuilder.getGooseEvent(e.getPlayer());
+        actionDispatcher.dispatchEvent(goose);
     }
 
     @Override

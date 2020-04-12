@@ -1,10 +1,10 @@
 package it.matteoavanzini.game.goose.tile;
 
-import it.matteoavanzini.game.goose.GameBoard;
-import it.matteoavanzini.game.goose.action.Action;
-import it.matteoavanzini.game.goose.action.BounceAction;
-import it.matteoavanzini.game.goose.action.WinAction;
-import it.matteoavanzini.game.goose.model.DiceRoll;
+import it.matteoavanzini.game.goose.GameContext;
+import it.matteoavanzini.game.goose.event.ActionBuilder;
+import it.matteoavanzini.game.goose.event.OnBounceEvent;
+import it.matteoavanzini.game.goose.event.OnMoveEvent;
+import it.matteoavanzini.game.goose.event.OnWinEvent;
 import it.matteoavanzini.game.goose.model.Player;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,27 +13,31 @@ import lombok.Setter;
 @Setter
 public class EndTile extends AbstractTile {
 
-    public Action getAction() {
-        Player player = EndTile.this.getLastOccupant();
-        DiceRoll diceRoll = game.getDiceRoll();
-        
-        Tile previousPlayerTile = player.getPreviousPosition();
-        int totalSum = previousPlayerTile.getNumber() + diceRoll.getSum();
-        
-        Action resultAction = new WinAction(player);
+    @Override
+    public void onLand(OnMoveEvent e) {
+        ActionBuilder actionBuilder = actionDispatcher.getActionBuilder();
 
-        if (totalSum > getNumber()) {
-            resultAction = new BounceAction(player, diceRoll.getResult());
-        }
+        Player player = e.getPlayer();
+        int diceSum = e.getDiceSum();
         
-        return resultAction;
+        Tile from = e.getStartingTile();
+        int totalSum = from.getNumber() + diceSum;
+        
+        if (totalSum > getNumber()) {
+            OnBounceEvent bounceEvent = actionBuilder.getBounceEvent(player);
+            actionDispatcher.dispatchEvent(bounceEvent);
+        } else {
+            OnWinEvent winEvent = actionBuilder.getWinEvent(player);
+            actionDispatcher.dispatchEvent(winEvent);
+        }
+
     }
     
-    public EndTile(GameBoard game, int number) {
-        super(game, number);
+    public EndTile(GameContext game, int number) {
+        this(game, number, Integer.toString(number));
     }
 
-    public EndTile(GameBoard game, int number, String name) {
+    public EndTile(GameContext game, int number, String name) {
         super(game, number);
         this.name = name;
     }

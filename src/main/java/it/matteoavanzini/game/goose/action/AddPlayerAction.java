@@ -1,49 +1,29 @@
 package it.matteoavanzini.game.goose.action;
 
-import java.util.List;
+import it.matteoavanzini.game.goose.event.OnAddPlayerEvent;
 
-import it.matteoavanzini.game.goose.GameBoard;
-import it.matteoavanzini.game.goose.exception.DuplicateUserException;
-import it.matteoavanzini.game.goose.exception.InvalidActionException;
-import it.matteoavanzini.game.goose.model.GoosePlayer;
-import it.matteoavanzini.game.goose.model.Player;
-import it.matteoavanzini.game.goose.tile.Tile;
+public class AddPlayerAction extends AbstractAction<OnAddPlayerEvent> {
 
-public class AddPlayerAction extends AbstractAction {
-
-    private GameBoard game;
-    private String newPlayerName;
-
-    public AddPlayerAction(GameBoard game, String name) {
-        this.game = game;
-        this.newPlayerName = name;
+    public AddPlayerAction() {
         this.message = "players: %s";
     }
 
     @Override
-    public boolean executeAction() throws InvalidActionException {
+    protected OnAddPlayerEvent getEvent() {
 
-        Tile startTile = game.getStartingTile();
-        List<Player> playersOnGame = game.getPlayers();
-        Player temporaryPlayer = new GoosePlayer(startTile, newPlayerName, game);
-        
-        if (!playersOnGame.contains(temporaryPlayer)) {
-            game.addParticipant(temporaryPlayer);
-        } else {
-            throw new DuplicateUserException(newPlayerName);
-        }
-        return true;
+        return new OnAddPlayerEvent(null);
     }
 
-    @Override
-    public Object[] getMessageParameters() {
-        String message = "";
-        List<Player> players = game.getPlayers();
-        for (Player p : players) {
-            message += p.getName() + ", ";
-        }
-        message = message.substring(0, message.length() - 2);
-        return new Object[] { message };
-    }
+    public Object[] getMessageParameters() { return null; }
+    // @Override
+    // public Object[] getMessageParameters() {
+    //     String message = "";
+    //     List<Player> players = game.getPlayers();
+    //     for (Player p : players) {
+    //         message += p.getName() + ", ";
+    //     }
+    //     message = message.substring(0, message.length() - 2);
+    //     return new Object[] { message };
+    // }
 
 }

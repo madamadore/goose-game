@@ -6,10 +6,12 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
-import it.matteoavanzini.game.goose.action.Action;
-import it.matteoavanzini.game.goose.action.ActionBuilder;
 import it.matteoavanzini.game.goose.action.ActionResult;
-import it.matteoavanzini.game.goose.action.DefaultActionBuilder;
+import it.matteoavanzini.game.goose.event.ActionBuilder;
+import it.matteoavanzini.game.goose.event.ActionDispatcher;
+import it.matteoavanzini.game.goose.event.ActionEvent;
+import it.matteoavanzini.game.goose.event.ActionListener;
+import it.matteoavanzini.game.goose.event.DefaultActionBuilder;
 import it.matteoavanzini.game.goose.exception.InvalidActionException;
 import it.matteoavanzini.game.goose.exception.InvalidCommandException;
 import it.matteoavanzini.game.goose.input.AddPlayerCommand;
@@ -28,8 +30,8 @@ import it.matteoavanzini.game.goose.tile.Tile;
 import lombok.Getter;
 import lombok.Setter;
 
-public final class GooseGameBoard implements GameBoard {
-    
+public final class GooseGameBoard implements GameContext, ActionDispatcher {
+
     @Getter
     private ActionBuilder actionBuilder;
     private CommandParserInterface parser;
@@ -41,12 +43,13 @@ public final class GooseGameBoard implements GameBoard {
     @Getter
     private List<Tile> tiles;
     @Getter
-    private List<Player> players;
+    private Set<Player> players;
     @Getter
     private ActionResult actionResult;
+    private String userMessage;
 
     public GooseGameBoard(boolean prankster) {
-        this.players = new ArrayList<>();
+        this.players = new HashSet<>();
         this.tiles = new ArrayList<>();
         this.prankster = prankster;
 
@@ -55,19 +58,18 @@ public final class GooseGameBoard implements GameBoard {
     }
 
     public void config() {
-        Set<Command> commands = new HashSet<Command>();
+        Set<Command<? extends ActionEvent>> commands = new HashSet<>();
         commands.add(new AddPlayerCommand(this));
         commands.add(new MoveCommand(this));
-        
-        this.parser = new CommandParser(this, commands);
+
+        this.parser = new CommandParser(commands);
         this.diceRoll = new TwoSixDiceRoll();
-        this.actionBuilder = new DefaultActionBuilder();
+        this.actionBuilder = new DefaultActionBuilder(this);
     }
 
     public void executeCommand(String command) throws InvalidCommandException {
-        actionResult = null;
-        Action action = parser.parse(command);
-        this.dispatchAction(action);
+        ActionEvent event = parser.parse(command);
+        this.dispatchEvent(event);
     }
 
     public void start() {
@@ -80,7 +82,7 @@ public final class GooseGameBoard implements GameBoard {
                 String command = scanner.nextLine();
                 executeCommand(command);
 
-                System.out.println(actionResult.getMessage());
+                System.out.println(userMessage);
             } catch (InvalidCommandException err) {
                 System.out.println(err.getMessage());
             }
@@ -88,24 +90,15 @@ public final class GooseGameBoard implements GameBoard {
         scanner.close();
     }
 
-    public void dispatchAction(Action action) {
-        try {
-            ActionResult result = action.execute();
-            actionResult = null != actionResult ? result.merge(actionResult) : result;
-        } catch (InvalidActionException err) {
-            actionResult = new ActionResult(false, err.getMessage());
-        }
-    }
-
     public GooseGameBoard() {
         this(false);
     }
 
     private void initializeGameBoard() {
-        for (int i=0; i<64; i++) {
+        for (int i = 0; i < 64; i++) {
             switch (i) {
                 case 0:
-                    tiles.add(new SimpleTile(this, i, "Start"));
+                    tiles.add(new SimpleTile(i, "Start"));
                     break;
                 case 6:
                     tiles.add(new BridgeTile(this, i));
@@ -161,11 +154,44 @@ public final class GooseGameBoard implements GameBoard {
     }
 
     public Player getPlayer(String name) {
-        for(Player p : players) {
+        for (Player p : players) {
             if (p.getName().equals(name)) {
                 return p;
             }
         }
         return null;
+    }
+
+    private Set<ActionListener> listeners;
+
+    @Override
+    public void dispatchEvent(ActionEvent action) {
+        try {
+            ActionListener targetListener = action.getTarget();
+            // process event dispatching it to Tile
+            userMessage = action.getMessage();
+        } catch (InvalidActionException err) {
+            userMessage = err.getMessage();
+        }
+    }
+
+    @Override
+    public void registerListener(ActionListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void unregisterListener(ActionListener listener) {
+        listeners.remove(listener);
+    }
+
+    @Override
+    public ActionDispatcher getActionDispatcher() {
+        return this;
+    }
+
+    @Override
+    public int getTilesCount() {
+        return tiles.size();
     }
 }

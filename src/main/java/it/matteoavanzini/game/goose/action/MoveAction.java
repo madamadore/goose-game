@@ -1,12 +1,14 @@
 package it.matteoavanzini.game.goose.action;
 
 import it.matteoavanzini.game.goose.GameBoard;
-import it.matteoavanzini.game.goose.exception.InvalidActionException;
+import it.matteoavanzini.game.goose.event.ActionEvent;
+import it.matteoavanzini.game.goose.event.ActionListener;
+import it.matteoavanzini.game.goose.event.OnMoveEvent;
 import it.matteoavanzini.game.goose.model.DiceRoll;
 import it.matteoavanzini.game.goose.model.Player;
 import it.matteoavanzini.game.goose.tile.Tile;
 
-public class MoveAction extends AbstractAction {
+public class MoveAction extends AbstractAction<OnMoveEvent> {
 
     protected Player player;
     protected DiceRoll diceRoll;
@@ -16,7 +18,6 @@ public class MoveAction extends AbstractAction {
 
     public MoveAction(Player player, int... rollDice) {
         this.player = player;
-        this.game = player.getGame();
         this.startingTile = player.getPosition();
         this.message = "%s rolls %d, %d. %s moves from %s to %s";
         if (rollDice.length > 0) {
@@ -28,7 +29,7 @@ public class MoveAction extends AbstractAction {
     }
 
     @Override
-    public boolean executeAction() throws InvalidActionException {
+    public OnMoveEvent getEvent() {
         Tile finalTile = game.getFinalTile();
         int sum = diceRoll.getSum();
         
@@ -38,9 +39,9 @@ public class MoveAction extends AbstractAction {
         }
 
         arrivalTile = game.getTile(arrivalNumber);
-        player.moveTo(arrivalTile);
+        this.message = formatMessage(getMessageParameters());
 
-		return true;
+        return new OnMoveEvent((ActionListener<OnMoveEvent>) player, startingTile, arrivalTile);
     }
 
     @Override

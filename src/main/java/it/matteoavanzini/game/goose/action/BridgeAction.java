@@ -1,29 +1,29 @@
 package it.matteoavanzini.game.goose.action;
 
 import it.matteoavanzini.game.goose.GameBoard;
+import it.matteoavanzini.game.goose.event.OnMoveEvent;
 import it.matteoavanzini.game.goose.exception.InvalidActionException;
 import it.matteoavanzini.game.goose.model.Player;
 import it.matteoavanzini.game.goose.tile.Tile;
 
-public class BridgeAction extends AbstractAction {
+public class BridgeAction extends MoveAction {
 
-    private Tile tile;
+    private Tile startingTile;
     private Player player;
 
-    BridgeAction(Tile tile) {
-        this.tile = tile;
-        this.player = tile.getLastOccupant();
+    BridgeAction(Tile startingTile, Player player) {
+        super(player);
         this.message = "%s jumps to %s";
     }
 
     @Override
-    public boolean executeAction() throws InvalidActionException {
-        Player player = tile.getLastOccupant();
+    public OnMoveEvent doAction() throws InvalidActionException {
+        
         GameBoard game = player.getGame();
         Tile arrival = game.getTile(12);
         player.moveTo(arrival);
 
-		return true;
+		return new OnMoveEvent(startingTile, arrival, null);
     }
 
     @Override

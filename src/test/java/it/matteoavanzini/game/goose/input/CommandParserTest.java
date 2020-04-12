@@ -26,14 +26,14 @@ public class CommandParserTest extends GooseGameTest {
         commands.add(new AddPlayerCommand(game));
         commands.add(new MoveCommand(game));
 
-        parser = new CommandParser(game, commands);
+        parser = new CommandParser(commands);
         Player pippo = new GoosePlayer(game.getStartingTile(), "Pippo", game);
         game.getPlayers().add(pippo);
     }
 
     @Test
     public void testValidCommands() throws InvalidCommandException {
-        Action move = parser.parse("move Pippo 4, 2");
+        ActionEvent move = parser.parse("move Pippo 4, 2");
         assertEquals(MoveAction.class, move.getClass());
     }
 
