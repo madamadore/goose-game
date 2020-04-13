@@ -1,6 +1,5 @@
 package it.matteoavanzini.game.goose.action;
 
-import it.matteoavanzini.game.goose.GameBoard;
 import it.matteoavanzini.game.goose.exception.InvalidActionException;
 import it.matteoavanzini.game.goose.model.Player;
 import it.matteoavanzini.game.goose.tile.Tile;
