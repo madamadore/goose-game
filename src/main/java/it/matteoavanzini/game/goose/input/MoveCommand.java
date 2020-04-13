@@ -29,6 +29,9 @@ public class MoveCommand extends AbstractCommand<MoveAction> {
             String rollDice = m.group(3);
             if (null != rollDice) {
                 roll = parseRollDice(rollDice);
+                if (roll[0] > 6 || roll[1] > 6) {
+                    throw new ParseCommandException("Invalid dice roll");
+                }
             }
             return new MoveAction(player, roll);
         } 
